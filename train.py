@@ -32,7 +32,7 @@ model = LlamaForCausalLM(config)
 # ===== 3. Load Dataset =====
 # 使用 streaming 模式读取 The Pile（不会爆内存）
 print(">>> Loading The Pile dataset...")
-dataset = load_dataset("EleutherAI/pile", split="train", streaming=True)
+dataset = load_dataset("EleutherAI/pile", split="train")
 
 # Tokenization
 def tokenize_fn(example):
