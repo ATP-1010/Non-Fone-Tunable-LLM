@@ -30,15 +30,15 @@ config = LlamaConfig(
 model = LlamaForCausalLM(config)
 
 # ===== 3. Load Dataset =====
-# 使用小数据集进行调试：WikiText-103
-print(">>> Loading WikiText-103 dataset...")
-dataset = load_dataset("wikitext", "wikitext-103-raw-v1", split="train")
+# 使用 streaming 模式读取 The Pile（不会爆内存）
+print(">>> Loading The Pile dataset...")
+dataset = load_dataset("EleutherAI/pile", split="train", streaming=True)
 
 # Tokenization
 def tokenize_fn(example):
-    return tokenizer(example["text"], truncation=True, padding="max_length", max_length=2048)
+    return tokenizer(example["text"], truncation=True, max_length=2048)
 
-tokenized_dataset = dataset.map(tokenize_fn, batched=True, remove_columns=["text"])
+tokenized_dataset = dataset.map(tokenize_fn)
 
 # ===== 4. Data Collator =====
 # causal LM，不使用 MLM
