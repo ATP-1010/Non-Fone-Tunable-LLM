@@ -38,7 +38,7 @@ dataset = load_dataset("DKYoon/SlimPajama-6B", split="train")
 def tokenize_fn(example):
     return tokenizer(example["text"], truncation=True, max_length=2048)
 
-tokenized_dataset = dataset.map(tokenize_fn)
+tokenized_dataset = dataset.map(tokenize_fn, num_proc=32)
 
 # ===== 4. Data Collator =====
 # causal LM，不使用 MLM
@@ -47,8 +47,8 @@ data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
 # ===== 5. Training Arguments =====
 training_args = TrainingArguments(
     output_dir="./checkpoints",
-    per_device_train_batch_size=8,            # 每卡 batch size
-    gradient_accumulation_steps=8,            # 8×8×8=512 global batch
+    per_device_train_batch_size=64,            # 每卡 batch size
+    gradient_accumulation_steps=1,            # 8×8×8=512 global batch
     num_train_epochs=1,
     logging_steps=50,
     save_steps=1000,
@@ -60,8 +60,10 @@ training_args = TrainingArguments(
     deepspeed="deepspeed_config.json",        # ✅ DeepSpeed ZeRO3
     eval_strategy="no",
     dataloader_drop_last=True,
-    report_to="tensorboard",                  # 可改成 wandb
-    logging_dir="./logs"
+    report_to="wandb",                  # 可改成 wandb
+    logging_dir="./logs",
+    dataloader_num_workers=16,
+    run_name="llama-pt"
 )
 
 # ===== 6. Trainer =====
