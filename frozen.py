@@ -40,6 +40,7 @@ for name, param in model.named_parameters():
         param.requires_grad = False
         print(f"[Freeze] {name}")
 
+exit()
 # ===== 3. Load Dataset =====
 print(">>> Loading The Pile dataset...")
 dataset = load_dataset("DKYoon/SlimPajama-6B", split="train")
