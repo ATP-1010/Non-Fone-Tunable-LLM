@@ -111,7 +111,7 @@ ds_cfg = "deepspeed_config.json" if use_ds else None
 
 training_args = TrainingArguments(
     output_dir="./checkpoints",
-    per_device_train_batch_size=8,
+    per_device_train_batch_size=64,
     gradient_accumulation_steps=1,
     num_train_epochs=1,
     logging_steps=50,
